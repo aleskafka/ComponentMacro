@@ -55,12 +55,21 @@ class ComponentMacro extends MacroSet
 		$node->content = preg_replace("#<$tag\[[^\]]+\](\s+\.\.\\\$?[a-zA-Z0-9_]+)?#", "<$tag", $node->content);
 		$component     = empty($m['component']) ? $tag : $m['component'];
 		$arg           = ":$component";
+		
+		
+		$start = '<?php $_children = $_l->children[] = new stdClass; ';
+		
+		if (!$node->htmlNode->isEmpty) {
+			$start .= 'ob_start(); ?>';
+			$end = '<?php
+			$html = ob_get_clean();';
+		} else {
+			$start .= '?>';
+			$end = '<?php
+			$html = NULL;';
+		}
 
-		$start = '<?php $_children = $_l->children[] = new stdClass; ob_start(); ?>';
-
-		$end = '<?php
-			$html = ob_get_contents(); ob_end_clean();
-			$_b->templates[%var]->renderChildTemplate(%var, ["_components" => $_components + (array)$_children, "_html" => $html] + %node.array %raw + $template->getParameters());
+		$end = '$_b->templates[%var]->renderChildTemplate(%var, ["_components" => $_components + (array)$_children, "_html" => $html] + %node.array %raw + $template->getParameters());
 			array_pop($_l->children); $_children = end($_l->children);
 		?>';
 
