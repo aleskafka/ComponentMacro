@@ -69,7 +69,7 @@ class ComponentMacro extends MacroSet
 			$html = NULL;';
 		}
 
-		$end = '$_b->templates[%var]->renderChildTemplate(%var, ["_components" => $_components + (array)$_children, "_html" => $html] + %node.array %raw + $template->getParameters());
+		$end .= '$_b->templates[%var]->renderChildTemplate(%var, ["_components" => $_components + (array)$_children, "_html" => $html] + %node.array %raw + $template->getParameters());
 			array_pop($_l->children); $_children = end($_l->children);
 		?>';
 
